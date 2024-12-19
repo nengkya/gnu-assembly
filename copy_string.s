@@ -15,6 +15,12 @@ _start:
     mov $buffer, %rdi   #char * dest
     call copy_string
 
+    mov $1, %rax	#sys_write
+    mov $1, %rdi	#dest index stdout
+    mov $buffer, %rsi	#char * src_index
+    mov $13, %rdx	#move string length into data register
+    syscall		#call kernel
+
     mov $60,  %rax  	#exit
     xor %rdi, %rdi 	#0
     syscall	  	#call kernel
@@ -22,7 +28,9 @@ _start:
 copy_string:
     mov $13, %rcx	#loop count
 .Loop:
-    mov (%rsi), al	#move value pointed by rsi into al
-    mov al, (%rdi)	#move al into place pointed by rdi
+    mov (%rsi), %rax	#move value pointed by rsi into al
+    mov %rax, (%rdi)	#move al into place pointed by rdi
     inc %rsi
     inc %rdi
+    loop .Loop
+    ret
